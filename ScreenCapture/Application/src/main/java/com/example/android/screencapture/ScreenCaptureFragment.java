@@ -40,7 +40,7 @@ import com.example.android.common.logger.Log;
 /**
  * Provides UI for the screen capture.
  */
-public class ScreenCaptureFragment extends Fragment implements View.OnClickListener {
+public class ScreenCaptureFragment extends Fragment  {
 
     private static final String TAG = "ScreenCaptureFragment";
 
@@ -58,7 +58,6 @@ public class ScreenCaptureFragment extends Fragment implements View.OnClickListe
     private MediaProjection mMediaProjection;
     private VirtualDisplay mVirtualDisplay;
     private MediaProjectionManager mMediaProjectionManager;
-    private Button mButtonToggle;
     private SurfaceView mSurfaceView;
 
     @Override
@@ -80,8 +79,6 @@ public class ScreenCaptureFragment extends Fragment implements View.OnClickListe
     public void onViewCreated(View view, Bundle savedInstanceState) {
         mSurfaceView = (SurfaceView) view.findViewById(R.id.surface);
         mSurface = mSurfaceView.getHolder().getSurface();
-        mButtonToggle = (Button) view.findViewById(R.id.toggle);
-        mButtonToggle.setOnClickListener(this);
     }
 
     @Override
@@ -93,6 +90,7 @@ public class ScreenCaptureFragment extends Fragment implements View.OnClickListe
         mScreenDensity = metrics.densityDpi;
         mMediaProjectionManager = (MediaProjectionManager)
                 activity.getSystemService(Context.MEDIA_PROJECTION_SERVICE);
+        startScreenCapture();
     }
 
     @Override
@@ -101,19 +99,6 @@ public class ScreenCaptureFragment extends Fragment implements View.OnClickListe
         if (mResultData != null) {
             outState.putInt(STATE_RESULT_CODE, mResultCode);
             outState.putParcelable(STATE_RESULT_DATA, mResultData);
-        }
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.toggle:
-                if (mVirtualDisplay == null) {
-                    startScreenCapture();
-                } else {
-                    stopScreenCapture();
-                }
-                break;
         }
     }
 
@@ -187,7 +172,6 @@ public class ScreenCaptureFragment extends Fragment implements View.OnClickListe
                 mSurfaceView.getWidth(), mSurfaceView.getHeight(), mScreenDensity,
                 DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR,
                 mSurface, null, null);
-        mButtonToggle.setText(R.string.stop);
     }
 
     private void stopScreenCapture() {
@@ -196,7 +180,6 @@ public class ScreenCaptureFragment extends Fragment implements View.OnClickListe
         }
         mVirtualDisplay.release();
         mVirtualDisplay = null;
-        mButtonToggle.setText(R.string.start);
     }
 
 }
